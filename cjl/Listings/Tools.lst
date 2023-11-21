@@ -1,0 +1,85 @@
+C51 COMPILER V9.60.7.0   TOOLS                                                             11/20/2023 18:49:43 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE TOOLS
+OBJECT MODULE PLACED IN .\Objects\Tools.obj
+COMPILER INVOKED BY: D:\keil\C51\BIN\C51.EXE Tools.c OPTIMIZE(8,SPEED) BROWSE INCDIR(D:\Keil\C51\INC\Atmel) DEBUG OBJECT
+                    -EXTEND PRINT(.\Listings\Tools.lst) OBJECT(.\Objects\Tools.obj)
+
+line level    source
+
+   1          #include <INTRINS.H>
+   2          #include <STC15F2K60S2.H>
+   3          #include "LED.h"
+   4          #include "Proteus.h"
+   5          
+   6          bit flag = 0;
+   7          unsigned int timer;// 毫秒为单位
+   8          
+   9          void Delayus(unsigned int xus)  //@12.000MHz
+  10          {
+  11   1              while(xus --)
+  12   1              {
+  13   2                      _nop_();
+  14   2                      _nop_();
+  15   2                      _nop_();
+  16   2                      _nop_();
+  17   2              }
+  18   1      }
+  19          
+  20          void Delayms(unsigned int xms)  //@12.000MHz
+  21          {
+  22   1              unsigned char data i, j;
+  23   1              while(xms --)
+  24   1              {
+  25   2                      i = 12;
+  26   2                      j = 169;
+  27   2                      do
+  28   2                      {
+  29   3                              while (--j);
+  30   3                      } while (--i);
+  31   2              }
+  32   1      }
+  33          
+  34          void Timer0_Init(unsigned int timer_x)
+  35          {
+  36   1              timer = timer_x;
+  37   1              TMOD |= 0X00; // 设置定时器0工作模式0，16位自动重载
+  38   1              TL0 = 0X18; TH0 = 0XFC; // 设置定时器溢出时间为1ms
+  39   1              ET0 = 1; // 开启定时器0中断允许
+  40   1              EA = 1; // 开启总中断允许
+  41   1              TR0 = 1; // 开启定时器0
+  42   1              PT0 = 0; // 设置优先级为低优先级
+  43   1      }
+  44          
+  45          void Timer0() interrupt 1
+  46          {       
+  47   1              
+  48   1              static unsigned int Timer0_Count=0;
+  49   1              Timer0_Count ++;
+  50   1              if(Timer0_Count == timer)
+  51   1              {
+  52   2                      Timer0_Count = 0;
+  53   2                      flag = 1;
+  54   2              }
+C51 COMPILER V9.60.7.0   TOOLS                                                             11/20/2023 18:49:43 PAGE 2   
+
+  55   1              disp(8);// 小数点位置0，1，2，3，4，5，6，7  8为无小数点
+  56   1      }
+  57          
+  58          
+  59          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    142    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

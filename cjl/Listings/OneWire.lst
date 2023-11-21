@@ -1,0 +1,112 @@
+C51 COMPILER V9.60.7.0   ONEWIRE                                                           11/20/2023 18:49:44 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE ONEWIRE
+OBJECT MODULE PLACED IN .\Objects\OneWire.obj
+COMPILER INVOKED BY: D:\keil\C51\BIN\C51.EXE OneWire.c OPTIMIZE(8,SPEED) BROWSE INCDIR(D:\Keil\C51\INC\Atmel) DEBUG OBJE
+                    -CTEXTEND PRINT(.\Listings\OneWire.lst) OBJECT(.\Objects\OneWire.obj)
+
+line level    source
+
+   1          #include "Tools.h"
+   2          // 读和写切换时要记得复位一次
+   3          
+   4          void reset_onewire_bus()
+   5          {
+   6   1              DQ = 1;
+*** ERROR C202 IN LINE 6 OF OneWire.c: 'DQ': undefined identifier
+   7   1              Delayus(5);
+   8   1              DQ = 0;
+*** ERROR C202 IN LINE 8 OF OneWire.c: 'DQ': undefined identifier
+   9   1              Delayus(500);
+  10   1              DQ = 1;
+*** ERROR C202 IN LINE 10 OF OneWire.c: 'DQ': undefined identifier
+  11   1      }
+  12          
+  13          bit onewire_ack()
+  14          {
+  15   1              bit ack = 0;
+  16   1              Delayus(69);
+  17   1              ack = DQ;// 0为有一线设备
+*** ERROR C202 IN LINE 17 OF OneWire.c: 'DQ': undefined identifier
+  18   1              Delayus(500);
+  19   1              return ack;
+  20   1      }
+  21          
+  22          void Write_DS18B20_byte(unsigned char dat)
+  23          {
+  24   1              unsigned char i;
+  25   1              for(i = 0; i < 8; i ++)
+  26   1              {
+  27   2                      DQ = 0;
+*** ERROR C202 IN LINE 27 OF OneWire.c: 'DQ': undefined identifier
+  28   2                      Delayus(10);
+  29   2                      DQ = dat&0X01;
+*** ERROR C202 IN LINE 29 OF OneWire.c: 'DQ': undefined identifier
+  30   2                      Delayus(120);
+  31   2                      dat >>= 1;
+  32   2                      DQ = 1;
+*** ERROR C202 IN LINE 32 OF OneWire.c: 'DQ': undefined identifier
+  33   2              }
+  34   1      }
+  35          
+  36          
+  37          
+  38          unsigned char Read_DS18B20_byte()
+  39          {
+  40   1              unsigned char i, received_byte;
+  41   1              for(i = 0; i < 8; i ++)
+  42   1              {
+  43   2                      DQ = 0;
+*** ERROR C202 IN LINE 43 OF OneWire.c: 'DQ': undefined identifier
+  44   2                      Delayus(5);
+  45   2                      DQ = 1;
+*** ERROR C202 IN LINE 45 OF OneWire.c: 'DQ': undefined identifier
+C51 COMPILER V9.60.7.0   ONEWIRE                                                           11/20/2023 18:49:44 PAGE 2   
+
+  46   2                      Delayus(5);
+  47   2                      received_byte >>= 1;
+  48   2                      if(DQ == 1)
+*** ERROR C202 IN LINE 48 OF OneWire.c: 'DQ': undefined identifier
+  49   2                      {
+  50   3                              received_byte |= 0X80; // DQ 从低位到高位输出
+  51   3                      }
+  52   2                      Delayus(120);
+  53   2                      DQ = 1;
+*** ERROR C202 IN LINE 53 OF OneWire.c: 'DQ': undefined identifier
+  54   2                      Delayus(5);
+  55   2              }
+  56   1              return received_byte;
+  57   1      }
+  58          
+  59          void init_DS18B20()
+  60          {
+  61   1              reset_onewire_bus();
+  62   1              bit ok = onewire_ack();
+*** ERROR C141 IN LINE 62 OF OneWire.c: syntax error near 'bit', expected '__asm'
+*** ERROR C202 IN LINE 62 OF OneWire.c: 'ok': undefined identifier
+  63   1      }
+  64          
+  65          float read_temprature()
+  66          {
+  67   1              unsigned char temh, teml;
+  68   1              int temp;
+  69   1              float temprature;
+  70   1              init_DS18B20()
+  71   1              Write_DS18B20_byte(0XCC)// 跳过ROM匹配指令
+*** ERROR C141 IN LINE 71 OF OneWire.c: syntax error near 'Write_DS18B20_byte', expected ';'
+  72   1              Write_DS18B20_byte(0X44);// 启动温度转化指令
+*** ERROR C141 IN LINE 72 OF OneWire.c: syntax error near 'Write_DS18B20_byte', expected ';'
+  73   1              Delayus(750);// 等待温度转化完成
+  74   1              init_DS18B20()
+  75   1              Write_DS18B20_byte(0XCC);
+*** ERROR C141 IN LINE 75 OF OneWire.c: syntax error near 'Write_DS18B20_byte', expected ';'
+  76   1              Write_DS18B20_byte(0XBE);// 写读指令
+  77   1              teml = Read_DS18B20_byte();
+  78   1              temh = Read_DS18B20_byte();
+  79   1              temprature = (temh<<8+teml)*0.0625;
+  80   1              return temprature;
+  81   1              
+  82   1      }
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  16 ERROR(S)

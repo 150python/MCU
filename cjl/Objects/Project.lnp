@@ -1,0 +1,7 @@
+".\Objects\LED.obj",
+".\Objects\main.obj",
+".\Objects\PressKey.obj",
+".\Objects\Tools.obj",
+".\Objects\Proteus.obj" 
+TO ".\Objects\Project" 
+PRINT(".\Listings\Project.m51") RAMSIZE(256) 

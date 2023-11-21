@@ -1,0 +1,72 @@
+C51 COMPILER V9.60.7.0   PROTEUS                                                           11/20/2023 18:49:44 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE PROTEUS
+OBJECT MODULE PLACED IN .\Objects\Proteus.obj
+COMPILER INVOKED BY: D:\keil\C51\BIN\C51.EXE Proteus.c OPTIMIZE(8,SPEED) BROWSE INCDIR(D:\Keil\C51\INC\Atmel) DEBUG OBJE
+                    -CTEXTEND PRINT(.\Listings\Proteus.lst) OBJECT(.\Objects\Proteus.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          // 数码管共阳极                 P27 P26 P25
+   3          #define Y0C P2=P2&0X1F      // 将锁存器前三位清零
+   4          #define Y4C P2=P2&0X1F|0X80 // 将锁存器前三位置为100  Y4使能
+   5          #define Y5C P2=P2&0X1F|0XA0 // 将锁存器前三位置为101  Y5使能
+   6          #define Y6C P2=P2&0X1F|0XC0 // 将锁存器前三位置为110  Y6使能
+   7          #define Y7C P2=P2&0X1F|0XE0 // 将锁存器前三位置为111  Y7使能
+   8          
+   9          unsigned char code duan_code[]={0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90,0xff,0xc8}; //共阳
+  10          unsigned char disp_buf[8];
+  11          
+  12          void disp_buf_change(unsigned char one,two,three,four,five,six,seven,eight)
+  13          {
+  14   1              disp_buf[0]=duan_code[one];
+  15   1              disp_buf[1]=duan_code[two];
+  16   1              disp_buf[2]=duan_code[three];
+  17   1              disp_buf[3]=duan_code[four];
+  18   1              disp_buf[4]=duan_code[five];
+  19   1              disp_buf[5]=duan_code[six];
+  20   1              disp_buf[6]=duan_code[seven];
+  21   1              disp_buf[7]=duan_code[eight];
+  22   1      }
+  23          
+  24          void disp(unsigned char i)
+  25          {
+  26   1              static unsigned char disp_com;
+  27   1              Y0C;// 初始化锁存器
+  28   1              P0 = 0X00;// 位选置为0
+  29   1              Y6C;// 打开位选锁存器  消除重影
+  30   1              Y0C;// 关闭位选锁存器
+  31   1              if(i==disp_com)
+  32   1              {
+  33   2                      P0=disp_buf[disp_com]&0x7f;
+  34   2              }
+  35   1              else
+  36   1              {
+  37   2                      P0=disp_buf[disp_com];
+  38   2              }
+  39   1              Y7C; // 打开段选锁存器 将上面的P0输入进去
+  40   1              Y0C; // 关闭段选
+  41   1              P0=1<<disp_com;
+  42   1              disp_com=(disp_com+1)%8;
+  43   1              Y6C; //打开位选，将上面的P0输入进去
+  44   1              Y0C; // 关闭段选
+  45   1      }
+  46          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    202    ----
+   CONSTANT SIZE    =     12    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      9      15
+C51 COMPILER V9.60.7.0   PROTEUS                                                           11/20/2023 18:49:44 PAGE 2   
+
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

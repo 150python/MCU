@@ -1,0 +1,46 @@
+C51 COMPILER V9.60.7.0   LED                                                               11/20/2023 18:49:43 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE LED
+OBJECT MODULE PLACED IN .\Objects\LED.obj
+COMPILER INVOKED BY: D:\keil\C51\BIN\C51.EXE LED.c OPTIMIZE(8,SPEED) BROWSE INCDIR(D:\Keil\C51\INC\Atmel) DEBUG OBJECTEX
+                    -TEND PRINT(.\Listings\LED.lst) OBJECT(.\Objects\LED.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Tools.h"
+   3          
+   4          // led 模块是 P07 06 P05 P04 P03 P02 P01 P00
+   5          // P2 模块 P27 P26 P25 P24 P23 P22 P21 P20
+   6          void Init_Led()
+   7          {
+   8   1              P2=P2&0X1F|0X80; // 使Y4C 使能
+   9   1              P0=0XFF; // 初始化LED全灭
+  10   1      }
+  11          
+  12          void clear_led(char dex)
+  13          {
+  14   1              P0 = P0 | (0X01 << dex);
+  15   1      }
+  16          
+  17          void light_led(int dex)
+  18          {
+  19   1              P0 = P0 ^ (0X01 << dex);
+  20   1      }
+  21          
+  22          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     40    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
