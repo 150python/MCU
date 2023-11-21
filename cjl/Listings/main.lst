@@ -1,4 +1,4 @@
-C51 COMPILER V9.60.7.0   MAIN                                                              11/20/2023 18:49:43 PAGE 1   
+C51 COMPILER V9.60.7.0   MAIN                                                              11/21/2023 20:57:55 PAGE 1   
 
 
 C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
@@ -14,36 +14,38 @@ line level    source
    4          #include "Proteus.h"
    5          #include "OneWire.h"
    6          
-   7          void main()
-   8          {
-   9   1              Init_Led();
-  10   1              Timer0_Init(1000);
-  11   1              float temp;
-*** ERROR C141 IN LINE 11 OF main.c: syntax error near 'float', expected '__asm'
-*** ERROR C202 IN LINE 11 OF main.c: 'temp': undefined identifier
-  12   1              unsigned int temp_disp;
-*** ERROR C141 IN LINE 12 OF main.c: syntax error near 'unsigned', expected '__asm'
-*** ERROR C202 IN LINE 12 OF main.c: 'temp_disp': undefined identifier
-  13   1              while(1){
-  14   2                      
-  15   2                      //disp_buf_change(0,1,2,3,4,5,6,9);
-  16   2                      
-  17   2                      if(flag)
-  18   2                      {
-  19   3      //                      light_led(3);
-  20   3      //                      Delayms(100);
-  21   3      //                      clear_led(3);
-  22   3                              temp = read_temprature();
-*** ERROR C202 IN LINE 22 OF main.c: 'temp': undefined identifier
-  23   3                              temp_disp = (int)(temp*100);
-*** ERROR C202 IN LINE 23 OF main.c: 'temp_disp': undefined identifier
-  24   3                              disp_buf_change(10,10,10,10,temp_disp>=1000?temp_disp/1000:10,temp_disp>=100?temp_disp%1000/100:10,
-*** ERROR C202 IN LINE 24 OF main.c: 'temp_disp': undefined identifier
-  25   3                              temp_disp%100/10,temp_disp%10);
-  26   3                              flag = 0;
-  27   3                      }
-  28   2                      Depend_Key_Read();
-  29   2              }
-  30   1      }
+   7          
+   8          void main()
+   9          {
+  10   1              float temp;
+  11   1              unsigned int temp_disp;
+  12   1              close_led();// ¹Ø±Õled
+  13   1              Timer0_Init(1000);
+  14   1              while(1){
+  15   2                      
+  16   2                      if(flag)
+  17   2                      {
+  18   3                              flag = 0;
+  19   3                              temp = read_temperature();
+  20   3                              temp_disp = (int)(temp*100);
+  21   3                              disp_buf_change(10,10,10,10,temp_disp>=1000?temp_disp/1000:10,temp_disp>=100?temp_disp%1000/100:10,
+  22   3                              temp_disp%100/10,temp_disp%10);
+  23   3                              
+  24   3                      }
+  25   2                      
+  26   2              }
+  27   1      }
 
-C51 COMPILATION COMPLETE.  0 WARNING(S),  7 ERROR(S)
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    199    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       6
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

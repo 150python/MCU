@@ -1,4 +1,7 @@
 #include "Tools.h"
+#include "reg52.h" 
+#include "intrins.h" //_nop_()在此头文件中 #define DQ P14
+sbit DQ = P1^4;
 // 读和写切换时要记得复位一次
 
 void reset_onewire_bus()
@@ -25,12 +28,13 @@ void Write_DS18B20_byte(unsigned char dat)
 	for(i = 0; i < 8; i ++)
 	{
 		DQ = 0;
-		Delayus(10);
+		Delayus(5);
 		DQ = dat&0X01;
-		Delayus(120);
+		Delayus(60);
 		dat >>= 1;
 		DQ = 1;
 	}
+	
 }
 
 
@@ -59,24 +63,23 @@ unsigned char Read_DS18B20_byte()
 void init_DS18B20()
 {
 	reset_onewire_bus();
-	bit ok = onewire_ack();
+	onewire_ack();
 }
 
-float read_temprature()
+float read_temperature()
 {
 	unsigned char temh, teml;
-	int temp;
-	float temprature;
-	init_DS18B20()
-	Write_DS18B20_byte(0XCC)// 跳过ROM匹配指令
+	float temperature;
+	init_DS18B20();
+	Write_DS18B20_byte(0XCC);// 跳过ROM匹配指令
 	Write_DS18B20_byte(0X44);// 启动温度转化指令
-	Delayus(750);// 等待温度转化完成
-	init_DS18B20()
+	Delayms(750);// 等待温度转化完成
+	init_DS18B20();
 	Write_DS18B20_byte(0XCC);
 	Write_DS18B20_byte(0XBE);// 写读指令
 	teml = Read_DS18B20_byte();
 	temh = Read_DS18B20_byte();
-	temprature = (temh<<8+teml)*0.0625;
-	return temprature;
+	temperature=(int)(temh<<8|teml) * 0.0625;
+	return temperature;
 	
 }

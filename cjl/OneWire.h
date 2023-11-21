@@ -5,6 +5,6 @@ bit onewire_ack();
 unsigned char Read_DS18B20_byte();
 void Write_DS18B20_byte(unsigned char dat);
 void init_DS18B20();
-float read_temprature();
+float read_temperature();
 
 #endif

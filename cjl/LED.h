@@ -4,5 +4,6 @@
 void light_led(char dex);
 void Init_Led();
 void clear_led(char dex);
+void close_led();
 
 #endif
