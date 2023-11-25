@@ -1,0 +1,69 @@
+C51 COMPILER V9.60.7.0   PROTEUS                                                           11/25/2023 12:01:09 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE PROTEUS
+OBJECT MODULE PLACED IN .\Objects\Proteus.obj
+COMPILER INVOKED BY: D:\keil\C51\BIN\C51.EXE Proteus.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\Prot
+                    -eus.lst) OBJECT(.\Objects\Proteus.obj)
+
+line level    source
+
+   1          #include <REG52.H>
+   2          #include "Global_Variable.h"
+   3          // 数码管共阳极                 P27 P26 P25
+   4          
+   5          unsigned char code duan_code[]={0xc0,0xf9,0xa4,0xb0,0x99,0x92,0x82,0xf8,0x80,0x90,0xff,0xbf}; //共阳数码管
+             -的段码表，前10个为0~9的段码，第10个为全熄（数码管熄灭）的段码，最后为“——”的段码
+   6          unsigned char disp_buf[8];
+   7          
+   8          void disp_buf_change(unsigned char one,two,three,four,five,six,seven,eight)
+   9          {
+  10   1              disp_buf[0]=duan_code[one];
+  11   1              disp_buf[1]=duan_code[two];
+  12   1              disp_buf[2]=duan_code[three];
+  13   1              disp_buf[3]=duan_code[four];
+  14   1              disp_buf[4]=duan_code[five];
+  15   1              disp_buf[5]=duan_code[six];
+  16   1              disp_buf[6]=duan_code[seven];
+  17   1              disp_buf[7]=duan_code[eight];
+  18   1      }
+  19          
+  20          void disp(unsigned char i)
+  21          {
+  22   1              static unsigned char disp_com;
+  23   1              Y0C;// 初始化锁存器
+  24   1              P0 = 0X00;// 位选置为0
+  25   1              Y6C;// 打开位选锁存器  消除重影 这里消除重影的方式为段选 位选 位选清零 段选
+  26   1              Y0C;// 关闭位选锁存器
+  27   1              if(i==disp_com)
+  28   1              {
+  29   2                      P0=disp_buf[disp_com]&0x7f;
+  30   2              }
+  31   1              else
+  32   1              {
+  33   2                      P0=disp_buf[disp_com];
+  34   2              }
+  35   1              Y7C; // 打开段选锁存器 将上面的P0输入进去
+  36   1              Y0C; // 关闭段选
+  37   1              P0=1<<disp_com;
+  38   1              disp_com=(disp_com+1)%8;
+  39   1              Y6C; //打开位选，将上面的P0输入进去
+  40   1              Y0C; // 关闭段选
+  41   1      }
+  42          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    202    ----
+   CONSTANT SIZE    =     12    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      9      15
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+C51 COMPILER V9.60.7.0   PROTEUS                                                           11/25/2023 12:01:09 PAGE 2   
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

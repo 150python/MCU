@@ -1,0 +1,160 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              11/25/2023 12:01:09 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: D:\keil\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main.ls
+                    -t) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <STC15F2K60S2.H>
+   2          #include "Global_Variable.h"
+   3          #include "Proteus.h"
+   4          #include "Timer.h"
+   5          #include "DS1302.h"
+   6          #include "Button.h"
+   7          #include "Led.h"
+   8          
+   9          
+  10          unsigned char interface=0; //ÏÔÊ¾½çÃæÇÐ»»¿ØÖÆ±äÁ¿¡£0:ÏÔÊ¾Ê±¼ä£¬1£ºÏÔÊ¾ÈÕÆÚ£¬2£ºÐ¡Ê±µ÷Õû£¬3£º·ÖÖÓµ÷Õû£¬4£ºÃ
+             -ëµ÷Õû£¬5£ºÄêµ÷Õû£¬6£ºÔÂµ÷Õû£¬7£ºÈÕµ÷Õû //ÓÉ°´¼üS7Ë³´ÎÇÐ»»
+  11          unsigned char key_value=0xff; //¼üÖµ
+  12          bit key_valid=0;
+  13          bit read_flag,flash_flag;
+  14          
+  15          void main(){
+  16   1              
+  17   1              unsigned char second,minite,hour,date,month,year;
+  18   1              cls_led(); cls_nbuzz();
+  19   1              Timer0_Init(); // ³õÊ¼»¯¶¨Ê±Æ÷0
+  20   1              Write_Ds1302(0x8e,0x00);// È¥Ð´±£»¤
+  21   1              Write_Ds1302(0x80,0x00);// Ãë
+  22   1              Write_Ds1302(0x82,0x09);// ·Ö
+  23   1              Write_Ds1302(0x84,0x08);// Ê±
+  24   1              Write_Ds1302(0x86,0x01);// ÈÕ
+  25   1              Write_Ds1302(0x88,0x01);// ÔÂ
+  26   1              Write_Ds1302(0x8c,0x22);// Äê
+  27   1              //DS1302³õÊ¼»¯³É22Äê1ÔÂ1ÈÕ8Ê±0·Ö0Ãë£»×¢Òâ:ÈçDS1302½ÓÓÐºó±¸µç³Ø£¬¾Í²»Òª¼ÓÊ±¼äÈÕÆÚ³õÊ¼»¯´úÂëÁË£¬ÕâÑùµ÷ÕûºÃÊ
+             -±¼äºó£¬ÒÔºó¿ª¹Ø»ú¶¼ÄÜ±£Ö¤Ê±¼äÕý³£
+  28   1              //±¾¿ª·¢°åÃ»ÓÐ½Ó±¸ÓÃµç³Ø£¬Îª½µµÍÊ±¼äµ÷Õû¸´ÔÓ³Ì¶È¼ÓÁËÊ±¼ä³õÊ¼»¯£¬µ±È»²»¼ÓÒ²¿ÉÒÔ£¬µ«Ã¿´Î¿ª»úÊ±¼äµ÷Õû¶¼½ÏÂé·
+             -³¡£
+  29   1              second=Read_Ds1302(0x81);
+  30   1              minite=Read_Ds1302(0x83);
+  31   1              hour=Read_Ds1302(0x85);//¶ÁÈ¡Ê±¼ä£¬×÷Îª¿ª»úÏÔÊ¾Öµ
+  32   1              disp_buf_change(hour>>4,hour&0x0f,11,minite>>4,minite&0x0f,11,second>>4,second&0x0f);
+  33   1              
+  34   1              while(1){
+  35   2                      key_pro(); //µ÷ÓÃ°´¼ü´¦Àíº¯Êý
+  36   2                      if(read_flag) //¶Á±êÖ¾ÓÐÐ§£¬¶ÁÈ¡Ê±¼äÈÕÆÚ
+  37   2                      {
+  38   3                              read_flag=0;
+  39   3                              second=Read_Ds1302(0x81);
+  40   3                              minite=Read_Ds1302(0x83);
+  41   3                              hour=Read_Ds1302(0x85);
+  42   3                              date=Read_Ds1302(0x87);
+  43   3                              month=Read_Ds1302(0x89);
+  44   3                              year=Read_Ds1302(0x8d);
+  45   3                      }
+  46   2                      switch(interface) //¸ù¾ÝinterfaceµÄ²»Í¬ÏÔÊ¾²»Í¬¹¦ÄÜ½çÃæ
+  47   2                      {
+  48   3                              case 0://Õý³£ÏÔÊ¾Ê±¼ä½çÃæ
+  49   3                              {
+  50   4                                      disp_buf_change(hour>>4,hour&0x0f,11,minite>>4,minite&0x0f,11,second>>4,second&0x0f);
+  51   4                              }break;
+C51 COMPILER V9.60.7.0   MAIN                                                              11/25/2023 12:01:09 PAGE 2   
+
+  52   3                              case 1://Õý³£ÏÔÊ¾ÈÕÆÚ½çÃæ
+  53   3                              {
+  54   4                                      disp_buf_change(year>>4,year&0x0f,11,month>>4,month&0x0f,11,date>>4,date&0x0f);
+  55   4                              }break;
+  56   3                              case 2://ÏÔÊ¾Ð¡Ê±µ÷Õû½çÃæ£¨Ð¡Ê±ÉÁË¸£©
+  57   3                              {
+  58   4                                              if(flash_flag)
+  59   4                                              {
+  60   5                                                      disp_buf_change(hour>>4,hour&0x0f,11,minite>>4,minite&0x0f,11,second>>4,second&0x0f);
+  61   5                                              }
+  62   4                                              else
+  63   4                                              {
+  64   5                                                      disp_buf_change(10,10,11,minite>>4,minite&0x0f,11,second>>4,second&0x0f);
+  65   5                                              }
+  66   4                              }break;
+  67   3                              case 3://ÏÔÊ¾·ÖÖÓµ÷Õû½çÃæ£¨·ÖÖÓÉÁË¸£©
+  68   3                              {               
+  69   4                                      if(flash_flag)
+  70   4                                              {
+  71   5                                                      disp_buf_change(hour>>4,hour&0x0f,11,minite>>4,minite&0x0f,11,second>>4,second&0x0f);
+  72   5                                              }
+  73   4                                              else
+  74   4                                              {
+  75   5                                                      disp_buf_change(hour>>4,hour&0x0f,11,10,10,11,second>>4,second&0x0f);
+  76   5                                              }
+  77   4                              }break;
+  78   3                              case 4://ÏÔÊ¾Ãëµ÷Õû½çÃæ£¨ÃëÉÁË¸£©
+  79   3                              {
+  80   4                                              if(flash_flag)
+  81   4                                              {
+  82   5                                                      disp_buf_change(hour>>4,hour&0x0f,11,minite>>4,minite&0x0f,11,second>>4,second&0x0f);
+  83   5                                              }
+  84   4                                              else
+  85   4                                              {
+  86   5                                                      disp_buf_change(hour>>4,hour&0x0f,11,minite>>4,minite&0x0f,11,10,10);
+  87   5                                              }
+  88   4                              }break;
+  89   3                              case 5://ÏÔÊ¾Äê·Ýµ÷Õû½çÃæ£¨Äê·ÝÉÁË¸£©
+  90   3                              {
+  91   4                                              if(flash_flag)
+  92   4                                              {
+  93   5                                                      disp_buf_change(year>>4,year&0x0f,11,month>>4,month&0x0f,11,date>>4,date&0x0f);
+  94   5                                              }
+  95   4                                              else
+  96   4                                              {
+  97   5                                                      disp_buf_change(10,10,11,month>>4,month&0x0f,11,date>>4,date&0x0f);
+  98   5                                              }
+  99   4                              }break;
+ 100   3                              case 6://ÏÔÊ¾ÔÂ·Ýµ÷Õû½çÃæ£¨ÔÂ·ÝÉÁË¸£©
+ 101   3                              {
+ 102   4                                              if(flash_flag)
+ 103   4                                              {
+ 104   5                                                      disp_buf_change(year>>4,year&0x0f,11,month>>4,month&0x0f,11,date>>4,date&0x0f);
+ 105   5                                              }
+ 106   4                                              else
+ 107   4                                              {
+ 108   5                                                      disp_buf_change(year>>4,year&0x0f,11,10,10,11,date>>4,date&0x0f);
+ 109   5                                              }
+ 110   4                              }break;
+ 111   3                              case 7://ÏÔÊ¾ÈÕµ÷Õû½çÃæ£¨ÈÕÉÁË¸£©
+ 112   3                              {
+ 113   4                                              if(flash_flag)
+C51 COMPILER V9.60.7.0   MAIN                                                              11/25/2023 12:01:09 PAGE 3   
+
+ 114   4                                              {
+ 115   5                                                      disp_buf_change(year>>4,year&0x0f,11,month>>4,month&0x0f,11,date>>4,date&0x0f);
+ 116   5                                              }
+ 117   4                                              else
+ 118   4                                              {
+ 119   5                                                      disp_buf_change(year>>4,year&0x0f,11,month>>4,month&0x0f,11,10,10);
+ 120   5                                              }
+ 121   4                              }break;                         
+ 122   3                      }
+ 123   2              }
+ 124   1                      
+ 125   1      }
+ 126          
+ 127          
+ 128          
+ 129          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    749    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       6
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      3    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

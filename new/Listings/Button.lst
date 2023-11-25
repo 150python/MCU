@@ -1,0 +1,254 @@
+C51 COMPILER V9.60.7.0   BUTTON                                                            11/25/2023 12:01:09 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE BUTTON
+OBJECT MODULE PLACED IN .\Objects\Button.obj
+COMPILER INVOKED BY: D:\keil\C51\BIN\C51.EXE Button.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\Butto
+                    -n.lst) OBJECT(.\Objects\Button.obj)
+
+line level    source
+
+   1          #include "Global_Variable.h"
+   2          #include <STC15F2K60S2.H>
+   3          #include "DS1302.h"
+   4          
+   5          void cls_nbuzz()
+   6          {
+   7   1              Y0C;
+   8   1              P0=0x00;
+   9   1              Y5C;
+  10   1              Y0C;
+  11   1      }
+  12          
+  13          
+  14          unsigned char key_scan() //¶ÀÁ¢°´¼ü¼üÅÌÉ¨Ãèº¯Êý£¬×¢Òâ¾ØÕó¼üÅÌÉè¼ÆÒ²¿É²ÉÈ¡´Ë½á¹¹
+  15          {
+  16   1              unsigned char temp;
+  17   1              static unsigned char keypress_count,key_val; //keypress_countÎªÁ¬Ðø¼ì²âµ½ÓÐ°´¼ü°´ÏÂµÄ´ÎÊý£¬ÓÃÒÔÈ¥¶¶¶¯
+  18   1              P3=P3|0x0f;  //½«P3µÍ4Î»ÉèÖÃ³ÉÊäÈë·½Ê½£¬È·±£ÄÜÕýÈ·¶ÁÈëP3¿ÚµÍ4Î»Òý½ÅµÄµçÆ½
+  19   1              temp=P3&0x0f;  //¶ÁÈëP3µÄµÍ4Î»£¬temµÄµÍ4Î»Îª¶ÁÈëµÄP3µÄµÍ4Î»£¬temµÄ¸ß4Î»¾ùÎª0
+  20   1              if(temp!=0x0f) //Èç¹û¶ÁÈëµÄP3µÄµÍ4Î»²»È«Îª0£¬ËµÃ÷ÓÐ°´¼ü°´ÏÂ
+  21   1              {
+  22   2                      if(keypress_count<5)//Èç¹û¼ÆÊýÖµÐ¡ÓÚ5
+  23   2                      {
+  24   3                              keypress_count++;//¼ÆÊýÖµ¼Ó1
+  25   3                      }
+  26   2                      else//Èç¹ûÁ¬Ðø5´Î¾ù¼ì²âµ½ÓÐ°´¼ü°´ÏÂ£¬ÅÐ¶ÏÊÇÄÄÒ»¸ö°´¼ü°´ÏÂ£¬¶ÁÈ¡¼üÖµ 
+  27   2                      {
+  28   3                              if(P30==0) key_val=7;//Èç¹ûP30µÈÓÚ0£¬ËµÃ÷4¸ö¶ÀÁ¢°´¼üÖÐ×îÉÏÃæÄÇ¸ö±ê²»S7µÄ°´¼ü±»°´ÏÂ£¬°´¼üÖµÎª7£¬ÏÂÃæÈýÐÐ
+             -ÀàËÆ¡£×¢Òâ£ºP30~P37µÈÔÚstc15f2k60s2.hÎÄ¼þÖÐÓÐ¶¨Òå
+  29   3                              //µ«ÔÚreg51.hµÈÎÄ¼þÖÐÃ»ÓÐ¶¨Òå£¬Ê¹ÓÃÊ±±ØÐë°üº¬stc15f2k60s2.hÕâÒ»ÀàÓÐP30¶¨ÒåµÄÍ·ÎÄ¼þ
+  30   3                              else if(P31==0) key_val=6;
+  31   3                              else if(P32==0) key_val=5;
+  32   3                              else if(P33==0) key_val=4;
+  33   3                      }
+  34   2                      return 0xff;//°´¼ü´¦ÓÚ±»°´ÏÂ×´Ì¬·µ»ØÎÞÐ§¼üÖµ0xff
+  35   2              }
+  36   1              else  //Èç¹ûÎ´¼ì²âµ½°´¼ü°´ÏÂ£¨temp=0x0f,Ò²¾ÍÊÇ¶ÁÈëµÄP3µÄµÍ4Î»È«1£¬ËµÃ÷ÎÞ°´¼ü°´ÏÂ¿É°´¼üÒÑÊÍ·Å£©
+  37   1              {
+  38   2                      if(keypress_count<5)//keypress_count<5£¬ËµÃ÷¼ì²âµ½°´¼üÊÍ·ÅÖ®Ç°Á¬Ðø¼ì²âµ½°´¼ü´¦ÓÚ±»°´ÏÂµÄ×´Ì¬µÄ´ÎÊýÐ¡ÓÚ5£
+             -¬ÅÐ¶ÏÎª°´¼ü¶¶¶¯£¬°´¼üÖµÎÞÐ§
+  39   2                      {
+  40   3                              keypress_count=0;
+  41   3                              return 0xff;//·µ»ØÎÞÐ§¼üÖµ
+  42   3                      }
+  43   2                      else//keypress_count=5£¬ËµÃ÷¼ì²âµ½°´¼üÊÍ·ÅÖ®Ç°Á¬Ðø¼ì²âµ½°´¼ü´¦ÓÚ±»°´ÏÂµÄ×´Ì¬µÄ´ÎÊý>=5£¬°´¼üÖµÓÐÐ§£¬·µ»ØÊ
+             -µ¼Ê°´¼üÖµ
+  44   2                      {
+  45   3                              key_valid=1;//°´¼üÓÐÐ§±êÖ¾ÓÐÐ§£¬°´¼ü´¦Àí½ø½«ÓÃµ½´Ë±êÖ¾£¬²¢ÔÚ´¦ÀíÊ±Çå0¸Ã±êÖ¾¡£
+  46   3                              keypress_count=0;
+  47   3                              return key_val;//·µ»ØÓÐÐ§¼üÖµ
+  48   3                      }
+  49   2              }
+  50   1      }
+  51          
+C51 COMPILER V9.60.7.0   BUTTON                                                            11/25/2023 12:01:09 PAGE 2   
+
+  52          void key_pro() //°´¼ü´¦Àíº¯Êý£¬´¦Àí½çÃæÇÐ»»¼°Ê±¼ä¡¢ÈÕÆÚµ÷Õû
+  53          {
+  54   1              unsigned char tem;
+  55   1              if(key_valid)//Èç¹û°´¼üÓÐÐ§±êÖ¾ÓÐÐ§²ÅÐè´¦Àí
+  56   1              {
+  57   2                      key_valid=0;
+  58   2                      if(key_value==7)//ÈÎÒâ×´Ì¬ÏÂ°´ÏÂ°´¼üÎªS7£¬´Ë°´¼ü¾ùÓÐÐ§£¬ËùÒÔinterface´Ó0µ½7¶¼ÒªÖ´ÐÐinterface=(interface+
+             -1)%8;
+  59   2                              {
+  60   3                                      interface=(interface+1)%8;
+  61   3                              }
+  62   2                      if(key_value==4)//ÈÎÒâ×´Ì¬ÏÂ°´ÏÂ°´¼üS4£¬¾ù·µ»ØÊ±¼äÏÔÊ¾½çÃæ;
+  63   2                              {
+  64   3                                      interface=0;
+  65   3                              }
+  66   2                      else //¶øS6¡¢S5Ö»ÔÚinterface´Ó2µ½7Ê±ÓÐÐ§£¬ËùÒÔÖ»ÔÚinterface´Ó2µ½7Ê±½øÐÐ´¦Àí
+  67   2                      {
+  68   3                              switch(interface)//interface´Ó2µ½7µÄÇé¿ö
+  69   3                              {                       
+  70   4                                      case 2: //Ð¡Ê±µ÷Õû£¬ÆäËûµ÷Õû×¢ÊÍÓëÐ¡Ê±µ÷Õû×¢ÊÍÀàËÆ£¬ºóÃæÓÐÔÙÖØ¸´
+  71   4                                      {
+  72   5                                                      switch(key_value)
+  73   5                                                      {
+  74   6                                                              case 6://±»°´ÏÂ°´¼üÎªS6£¬Ð¡Ê±¼Ó1
+  75   6                                                              {
+  76   7                                                                      tem=Read_Ds1302(0x85); //¶ÁÈ¡Ð¡Ê±£¬½á¹ûÎªBCDÂëÐÎÊ½
+  77   7                                                                      tem=((tem>>4)&0x03)*10+(tem&0x0f);//½«Ð¡Ê±±ä³É10½øÖÆÐÎÊ½£¨²Î¿´ds1302µÄdatasheetÖÐ¸÷¼Ä´æÆ÷µÄÐÎÊ½£¬µ
+             -Ú10Ò³Table 3. Register Address/Definition£©
+  78   7                                                                      tem=(tem+1)%24;//Ð¡Ê±¼Ó1£¬½á¹û²»³¬¹ý23
+  79   7                                                                      tem=((tem/10)<<4)+(tem%10);//ÔÙ±ä»ØBCDÂëÐÎÊ½
+  80   7                                                                      Write_Ds1302(0x84,tem);
+  81   7                                                              }break;
+  82   6                                                              case 5://±»°´ÏÂ°´¼üÎªS5£¬Ð¡Ê±¼õ1
+  83   6                                                              {
+  84   7                                                                      tem=Read_Ds1302(0x85);
+  85   7                                                                      tem=((tem>>4)&0x03)*10+(tem&0x0f);
+  86   7                                                                      if(tem>=1)
+  87   7                                                                      tem--;
+  88   7                                                                      else tem=23;
+  89   7                                                                      tem=((tem/10)<<4)+(tem%10);
+  90   7                                                                      Write_Ds1302(0x84,tem);
+  91   7                                                              }break;
+  92   6                                                      }
+  93   5                                      }break;
+  94   4                                      case 3: //·ÖÖÓµ÷Õû
+  95   4                                      {               
+  96   5                                                      switch(key_value)
+  97   5                                                      {
+  98   6                                                              case 6:
+  99   6                                                              {
+ 100   7                                                                      tem=Read_Ds1302(0x83);
+ 101   7                                                                      tem=(tem>>4)*10+(tem&0x0f);
+ 102   7                                                                      tem=(tem+1)%60;
+ 103   7                                                                      tem=((tem/10)<<4)+(tem%10);
+ 104   7                                                                      Write_Ds1302(0x82,tem);
+ 105   7                                                              }break;
+ 106   6                                                              case 5:
+ 107   6                                                              {
+ 108   7                                                                      tem=Read_Ds1302(0x83);
+ 109   7                                                                      tem=(tem>>4)*10+(tem&0x0f);
+ 110   7                                                                      if(tem>=1)
+ 111   7                                                                      tem--;
+C51 COMPILER V9.60.7.0   BUTTON                                                            11/25/2023 12:01:09 PAGE 3   
+
+ 112   7                                                                      else tem=59;
+ 113   7                                                                      tem=((tem/10)<<4)+(tem%10);
+ 114   7                                                                      Write_Ds1302(0x82,tem);
+ 115   7                                                              }break;
+ 116   6                                                      }
+ 117   5                                      }break;
+ 118   4                                      case 4: //Ãëµ÷Õû
+ 119   4                                      {
+ 120   5                                                      switch(key_value)
+ 121   5                                                      {
+ 122   6                                                              case 6:
+ 123   6                                                              {
+ 124   7                                                                      tem=Read_Ds1302(0x81);
+ 125   7                                                                      tem=(tem>>4)*10+(tem&0x0f);
+ 126   7                                                                      tem=(tem+1)%60;
+ 127   7                                                                      tem=((tem/10)<<4)+(tem%10);
+ 128   7                                                                      Write_Ds1302(0x80,tem);
+ 129   7                                                              }break;
+ 130   6                                                              case 5:
+ 131   6                                                              {
+ 132   7                                                                      tem=Read_Ds1302(0x81);
+ 133   7                                                                      tem=(tem>>4)*10+(tem&0x0f);
+ 134   7                                                                      if(tem>=1)
+ 135   7                                                                      tem--;
+ 136   7                                                                      else tem=59;
+ 137   7                                                                      tem=((tem/10)<<4)+(tem%10);
+ 138   7                                                                      Write_Ds1302(0x80,tem);
+ 139   7                                                              }break;
+ 140   6                                                      }
+ 141   5                                      }break;
+ 142   4                                      case 5: //Äê·Ýµ÷Õû
+ 143   4                                      {
+ 144   5                                                      switch(key_value)
+ 145   5                                                      {
+ 146   6                                                              case 6:
+ 147   6                                                              {
+ 148   7                                                                      tem=Read_Ds1302(0x8d);
+ 149   7                                                                      tem=(tem>>4)*10+(tem&0x0f);
+ 150   7                                                                      tem=(tem+1)%100;
+ 151   7                                                                      tem=((tem/10)<<4)+(tem%10);
+ 152   7                                                                      Write_Ds1302(0x8c,tem);
+ 153   7                                                              }break;
+ 154   6                                                              case 5:
+ 155   6                                                              {
+ 156   7                                                                      tem=Read_Ds1302(0x8d);
+ 157   7                                                                      tem=(tem>>4)*10+(tem&0x0f);
+ 158   7                                                                      if(tem>=1)
+ 159   7                                                                      tem=(tem-1);
+ 160   7                                                                      else tem=99;
+ 161   7                                                                      tem=((tem/10)<<4)+(tem%10);
+ 162   7                                                                      Write_Ds1302(0x8c,tem);
+ 163   7                                                              }break;
+ 164   6                                                      }
+ 165   5                                      }break;
+ 166   4                                      case 6: //ÔÂ·Ýµ÷Õû
+ 167   4                                      {
+ 168   5                                                      switch(key_value)
+ 169   5                                                      {
+ 170   6                                                              case 6:
+ 171   6                                                              {
+ 172   7                                                                      tem=Read_Ds1302(0x89);
+ 173   7                                                                      tem=(tem>>4)*10+(tem&0x0f);
+C51 COMPILER V9.60.7.0   BUTTON                                                            11/25/2023 12:01:09 PAGE 4   
+
+ 174   7                                                                      tem=(tem+1)%13;
+ 175   7                                                                      if(tem==0) tem=1;
+ 176   7                                                                      tem=((tem/10)<<4)+(tem%10);
+ 177   7                                                                      Write_Ds1302(0x88,tem);
+ 178   7                                                              }break;
+ 179   6                                                              case 5:
+ 180   6                                                              {
+ 181   7                                                                      tem=Read_Ds1302(0x89);
+ 182   7                                                                      tem=(tem>>4)*10+(tem&0x0f);
+ 183   7                                                                      if(tem>=2)
+ 184   7                                                                      tem--;
+ 185   7                                                                      else tem=12;
+ 186   7                                                                      tem=((tem/10)<<4)+(tem%10);
+ 187   7                                                                      Write_Ds1302(0x88,tem);
+ 188   7                                                              }break;
+ 189   6                                                      }
+ 190   5                                      }break;
+ 191   4                                      case 7: //ÈÕµ÷Õû
+ 192   4                                      {
+ 193   5                                                      switch(key_value)
+ 194   5                                                      {
+ 195   6                                                              case 6:
+ 196   6                                                              {
+ 197   7                                                                      tem=Read_Ds1302(0x87);
+ 198   7                                                                      tem=(tem>>4)*10+(tem&0x0f);
+ 199   7                                                                      tem=(tem+1)%32;
+ 200   7                                                                      if(tem==0) tem=1;
+ 201   7                                                                      tem=((tem/10)<<4)+(tem%10);
+ 202   7                                                                      Write_Ds1302(0x86,tem);
+ 203   7                                                              }break;
+ 204   6                                                              case 5:
+ 205   6                                                              {
+ 206   7                                                                      tem=Read_Ds1302(0x87);
+ 207   7                                                                      tem=(tem>>4)*10+(tem&0x0f);
+ 208   7                                                                      if(tem>=2)
+ 209   7                                                                      tem--;
+ 210   7                                                                      else tem=31;
+ 211   7                                                                      tem=((tem/10)<<4)+(tem%10);
+ 212   7                                                                      Write_Ds1302(0x86,tem);
+ 213   7                                                              }break;
+ 214   6                                                      }
+ 215   5                                      }break;                                 
+ 216   4                              }       
+ 217   3                      }                               
+ 218   2              }
+ 219   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    983    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      2       1
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
